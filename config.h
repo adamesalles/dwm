@@ -1,5 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
+#include <X11/XF86keysym.h>
+
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -41,6 +43,8 @@ static const Layout layouts[] = {
 	{ "[]=",      tile },    /* first entry is default */
 	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
+	{ "|M|",      centeredmaster },
+        { ">M>",      centeredfloatingmaster },
 };
 
 /* key definitions */
@@ -63,15 +67,23 @@ static const char *nmtuicmd[] = {"termite", "-e", "nmtui", NULL};
 static const char *pavucontrolcmd[] = {"pavucontrol", NULL};
 static const char *pcmanfmcmd[] = {"pcmanfm", NULL};
 static const char *ncmpcppcmd[] = {"termite", "-e", "ncmpcpp", NULL};
+static const char *printscreencmd[] = {"scrot" "~/screenshots/%Y-%m-%d-%T-screenshot.png", NULL};
 static const char *displayselectcmd[] = {"sh", "displayselect", NULL};
+static const char *raisevolumecmd[] = {"amixer", "set", "Master", "5%+", NULL};
+static const char *lowervolumecmd[] = {"amixer", "set", "Master", "5%-", NULL};
+static const char *mutevolumecmd[] = {"amixer", "-q", "set", "Master", "toggle", NULL};
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,             XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY,                       XK_r,      spawn,          {.v = pcmanfmcmd } },
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+	{ MODKEY,                       XK_r,      spawn,          {.v = pcmanfmcmd } },
+	{ MODKEY,                       XK_Print,      spawn,          {.v = printscreencmd } },
 	{ MODKEY,                       XK_F3,      spawn,          {.v = displayselectcmd } },
 	{ MODKEY,                       XK_a,      spawn,          {.v = pavucontrolcmd } },
 	{ MODKEY,                       XK_m,      spawn,          {.v = ncmpcppcmd } },
+	{ NULL,		 XF86XK_AudioRaiseVolume,	 spawn,	 {.v = raisevolumecmd } },
+	{ NULL,		 XF86XK_AudioLowerVolume,	 spawn,	 {.v = lowervolumecmd } },
+	{ NULL,		 XF86XK_AudioMute,	 	spawn,	 {.v = mutevolumecmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_Down,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_Up,      focusstack,     {.i = -1 } },
@@ -87,6 +99,8 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_w,      spawn,     {.v = nmtuicmd } },
 	{ MODKEY,             XK_w,      spawn,     {.v = browsercmd } },
 	{ MODKEY|ShiftMask,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                       XK_u,      setlayout,      {.v = &layouts[3]} },
+        { MODKEY,                       XK_o,      setlayout,      {.v = &layouts[4]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
